@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Guides</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <link href='https://api.mapbox.com/mapbox-gl-js/v3.1.2/mapbox-gl.css' rel='stylesheet' />
+    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.css' type='text/css' />
+    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-traffic/v0.1.0/mapbox-gl-traffic.css' type='text/css' />
+    <style>
+        body { margin: 0; padding: 0; }
+        #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+    </style>
+</head>
+
+<body>
+
+<div id="map"></div>
+<div id="directions-control" class="mapboxgl-ctrl"></div>
+
+<script src='https://api.mapbox.com/mapbox-gl-js/v3.1.2/mapbox-gl.js'></script>
+<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.js'></script>
+<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js'></script>
+<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-traffic/v0.1.0/mapbox-gl-traffic.js'></script>
+
+<script>
+if (!mapboxgl.supported()) {
+    alert('Ваш браузер не поддерживает карты');
+} else {
+
+    mapboxgl.accessToken = '{{ mapbox_access_token }}';
+    var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/travvel/clvsvp79n01x701oc3evs6ih8',
+    });
+
+    map.addControl(new MapboxGeocoder({
+        accessToken: mapboxgl.accessToken,
+        mapboxgl: mapboxgl
+    }), 'top-left'); // Поиск в верхний левый угол
+
+    map.addControl(new mapboxgl.FullscreenControl());
+    map.addControl(new mapboxgl.NavigationControl());
+    map.addControl(new mapboxgl.GeolocateControl({
+        fitBoundsOptions: true,
+        positionOptions: {
+            enableHighAccuracy: true,
+            timeout:6000
+        },
+        showUserHeading: true,
+        trackUserLocation: true,
+    }));
+
+    var directions = new MapboxDirections({
+        accessToken: mapboxgl.accessToken,
+        unit: 'metric',
+        profile: 'mapbox/driving',
+        controls: { instructions: true },
+        language: 'ru'
+    });
+
+    map.addControl(directions, 'top-left');
+
+    map.addControl(new MapboxTraffic({
+        style: "mapbox://styles/mapbox/traffic-night-v2",
+        showTraffic: true
+    }));
+}
+</script>
+
+<!--</body>-->
+<!--</html>-->
+<!--<!DOCTYPE html>-->
+<!--{% load static %}-->
+<!--<html>-->
+<!--<head>-->
+<!--    <meta charset="utf-8">-->
+<!--    <title>Guides</title>-->
+<!--    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">-->
+<!--    <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">-->
+<!--    <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet"/>-->
+<!--    <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.css"-->
+<!--          rel="stylesheet" type="text/css"/>-->
+<!--    <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-traffic/v0.1.0/mapbox-gl-traffic.css"-->
+<!--          rel="stylesheet" type="text/css"/>-->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css">-->
+<!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>-->
+<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>-->
+<!--    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>-->
+<!--    <style>-->
+<!--        html, body, .page-wrapper, .page-content, #map {-->
+<!--            height: 100%;-->
+<!--            margin: 0;-->
+<!--            padding: 0;-->
+<!--        }-->
+<!--        .page-wrapper.toggled .sidebar-wrapper {-->
+<!--            left: 0;-->
+<!--        }-->
+<!--        .sidebar-wrapper {-->
+<!--            width: 260px;-->
+<!--            height: 100%;-->
+<!--            max-height: 100%;-->
+<!--            position: fixed;-->
+<!--            top: 0;-->
+<!--            left: -260px;-->
+<!--            z-index: 999;-->
+<!--            transition: all 0.3s ease;-->
+<!--        }-->
+<!--        .page-content {-->
+<!--            transition: margin-left 0.3s ease;-->
+<!--        }-->
+<!--        .page-wrapper.toggled .page-content {-->
+<!--            margin-left: 260px;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div class="page-wrapper chiller-theme toggled">-->
+<!--    <a id="show-sidebar" class="btn btn-sm btn-dark" href="#">-->
+<!--        <i class="fas fa-bars"></i>-->
+<!--    </a>-->
+<!--    <nav id="sidebar" class="sidebar-wrapper">-->
+<!--        <div class="sidebar-content">-->
+<!--            <div class="sidebar-brand">-->
+<!--                <a href="#">pro sidebar</a>-->
+<!--                <div id="close-sidebar">-->
+<!--                    <i class="fas fa-times"></i>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="sidebar-menu"></div>-->
+<!--        </div>-->
+<!--    </nav>-->
+<!--    <main class="page-content">-->
+<!--        <div id="map"></div>-->
+<!--        <div id="directions-control" class="mapboxgl-ctrl"></div>-->
+<!--    </main>-->
+<!--</div>-->
+<!--<div id="geocoder-container"></div>-->
+<!--<div id="fullscreen-container"></div>-->
+<!--<div id="navigation-container"></div>-->
+<!--<div id="geolocate-container"></div>-->
+<!--<div id="directions-container"></div>-->
+<!--<div id="traffic-container"></div>-->
+<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>-->
+<!--<script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>-->
+<!--<script>-->
+<!--    $(document).ready(function() {-->
+<!--        $(".sidebar-dropdown > a").click(function() {-->
+<!--            $(".sidebar-submenu").slideUp(200);-->
+<!--            if ($(this).parent().hasClass("active")) {-->
+<!--                $(".sidebar-dropdown").removeClass("active");-->
+<!--                $(this).parent().removeClass("active");-->
+<!--            } else {-->
+<!--                $(".sidebar-dropdown").removeClass("active");-->
+<!--                $(this).next(".sidebar-submenu").slideDown(200);-->
+<!--                $(this).parent().addClass("active");-->
+<!--            }-->
+<!--        });-->
+
+<!--        $("#close-sidebar").click(function() {-->
+<!--            $(".page-wrapper").removeClass("toggled");-->
+<!--            map.resize();-->
+<!--        });-->
+<!--        $("#show-sidebar").click(function() {-->
+<!--            $(".page-wrapper").addClass("toggled");-->
+<!--            map.resize();-->
+<!--        });-->
+
+
+<!--    });-->
+<!--</script>-->
+<!--<script>-->
+<!--    if (!mapboxgl.supported()) {-->
+<!--        alert('Ваш браузер не поддерживает карты');-->
+<!--    } else {-->
+<!--        mapboxgl.accessToken = '{{ mapbox_access_token }}';-->
+<!--        var map = new mapboxgl.Map({-->
+<!--            container: 'map',-->
+<!--            style: 'mapbox://styles/travvel/clvsvp79n01x701oc3evs6ih8',-->
+<!--        });-->
+
+<!--        // Создание MapboxGeocoder и помещение его в div с id "geocoder-container"-->
+<!--        var geocoderContainer = document.getElementById('geocoder-container');-->
+<!--        map.addControl(new MapboxGeocoder({-->
+<!--            accessToken: mapboxgl.accessToken,-->
+<!--            mapboxgl: mapboxgl,-->
+<!--            container: geocoderContainer-->
+<!--        }), 'top-left'); // Поиск в верхний левый угол-->
+
+<!--        // Создание FullscreenControl и помещение его в div с id "fullscreen-container"-->
+<!--        var fullscreenContainer = document.getElementById('fullscreen-container');-->
+<!--        map.addControl(new mapboxgl.FullscreenControl(), 'top-left');-->
+<!--        fullscreenContainer.appendChild(map.getContainer().querySelector('.mapboxgl-ctrl-fullscreen'));-->
+
+<!--        // Создание NavigationControl и помещение его в div с id "navigation-container"-->
+<!--        var navigationContainer = document.getElementById('navigation-container');-->
+<!--        map.addControl(new mapboxgl.NavigationControl(), 'top-left');-->
+<!--        navigationContainer.appendChild(map.getContainer().querySelector('.mapboxgl-ctrl-nav'));-->
+
+<!--        // Создание GeolocateControl и помещение его в div с id "geolocate-container"-->
+<!--        var geolocateContainer = document.getElementById('geolocate-container');-->
+<!--        map.addControl(new mapboxgl.GeolocateControl({-->
+<!--            fitBoundsOptions: true,-->
+<!--            positionOptions: {-->
+<!--                enableHighAccuracy: true,-->
+<!--                timeout:6000-->
+<!--            },-->
+<!--            showUserHeading: true,-->
+<!--            trackUserLocation: true,-->
+<!--            container: geolocateContainer-->
+<!--        }));-->
+
+<!--        // Создание MapboxDirections и помещение его в div с id "directions-container"-->
+<!--        var directionsContainer = document.getElementById('directions-container');-->
+<!--        var directions = new MapboxDirections({-->
+<!--            accessToken: mapboxgl.accessToken,-->
+<!--            unit: 'metric',-->
+<!--            profile: 'mapbox/driving',-->
+<!--            controls: { instructions: true },-->
+<!--            language: 'ru',-->
+<!--            container: directionsContainer-->
+<!--        });-->
+<!--        map.addControl(directions, 'top-left');-->
+
+<!--        // Создание MapboxTraffic и помещение его в div с id "traffic-container"-->
+<!--        var trafficContainer = document.getElementById('traffic-container');-->
+<!--        map.addControl(new MapboxTraffic({-->
+<!--            style: "mapbox://styles/mapbox/traffic-night-v2",-->
+<!--            showTraffic: true,-->
+<!--            container: trafficContainer-->
+<!--        }));-->
+<!--    }-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
